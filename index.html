@@ -22,8 +22,11 @@ video { display:none; }
 
 <div class="output">
   <div>Farbkontrast (roh): <span id="colorContrastOut">–</span></div>
+  <div>Farbkontrast-Score: <span id="colorContrastScoreOut">–</span></div>
   <div>Bewegung (roh): <span id="motionOut">–</span></div>
+  <div>Bewegungs-Score: <span id="motionScoreOut">–</span></div>
   <div>Zeit pro Schnitt: <span id="cutTimeOut">–</span></div>
+  <div>Schnitt-Score (+25): <span id="cutScoreOut">–</span></div>
 </div>
 
 <video id="video" playsinline preload="metadata"></video>
@@ -38,6 +41,9 @@ const statusEl = document.getElementById("status");
 const colorContrastOut = document.getElementById("colorContrastOut");
 const motionOut = document.getElementById("motionOut");
 const cutTimeOut = document.getElementById("cutTimeOut");
+const colorContrastScoreOut = document.getElementById("colorContrastScoreOut");
+const motionScoreOut = document.getElementById("motionScoreOut");
+const cutScoreOut = document.getElementById("cutScoreOut");
 
 const ANALYSIS_WIDTH = 160;
 const ANALYSIS_HEIGHT = 90;
@@ -103,6 +109,9 @@ fileInput.addEventListener("change", () => {
   colorContrastOut.textContent = "–";
   motionOut.textContent = "–";
   cutTimeOut.textContent = "–";
+  colorContrastScoreOut.textContent = "–";
+  motionScoreOut.textContent = "–";
+  cutScoreOut.textContent = "–";
 
   results = [];
   previousFrame = null;
@@ -128,6 +137,9 @@ analyzeBtn.addEventListener("click", async () => {
   colorContrastOut.textContent = "–";
   motionOut.textContent = "–";
   cutTimeOut.textContent = "–";
+  colorContrastScoreOut.textContent = "–";
+  motionScoreOut.textContent = "–";
+  cutScoreOut.textContent = "–";
 
   statusEl.textContent = "Analysiere …";
 
@@ -442,6 +454,12 @@ function finishAnalysis() {
   motionOut.textContent = formatDecimal(avgMotionRaw, 2);
   cutTimeOut.textContent = isFinite(zeitProSchnittSeconds)
     ? `${formatDecimal(zeitProSchnittSeconds, 2)} s`
+    : "–";
+
+  colorContrastScoreOut.textContent = formatDecimal((avgColorContrastRaw / 40) * 100, 2);
+  motionScoreOut.textContent = formatDecimal((avgMotionRaw / 110) * 100, 2);
+  cutScoreOut.textContent = isFinite(zeitProSchnittSeconds)
+    ? formatDecimal((1 - zeitProSchnittSeconds / 7) * 100 + 25, 2)
     : "–";
 
   statusEl.textContent = "Fertig.";
